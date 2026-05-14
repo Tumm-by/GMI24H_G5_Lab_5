@@ -20,6 +20,12 @@ namespace AlgorithmLib
         /// <param name="collection">Listan som ska sorteras.</param>
         public void BubbleSort(IList<T> collection)
         {
+            //Edge cases
+            if (collection == null)
+                throw new ArgumentNullException($"nameof{collection} was null");
+            else if (collection.Count < 2)
+                return;
+
             T[] arr = collection.ToArray();
             int n = arr.Length;
 
@@ -129,6 +135,12 @@ namespace AlgorithmLib
         /// <param name="collection">Listan som ska sorteras.</param>
         public void HeapSort(IList<T> collection)
         {
+            //Edge cases
+            if (collection == null)
+                throw new ArgumentNullException($"nameof{collection} was null");
+            else if (collection.Count < 2)
+                return;
+
             T[] arr = collection.ToArray();
             int n = arr.Length;
             // 1. Build a maxheap
@@ -175,6 +187,12 @@ namespace AlgorithmLib
         /// <param name="collection">Listan som ska sorteras.</param>
         public void InsertionSort(IList<T> collection)
         {
+            //Edge cases
+            if (collection == null)
+                throw new ArgumentNullException($"nameof{collection} was null");
+            else if (collection.Count < 2)
+                return;
+
             T[] arr = collection.ToArray();
             int n = arr.Length;
 
@@ -182,7 +200,6 @@ namespace AlgorithmLib
             {
                 T current = arr[i];
                 int j = i - 1;
-
                 // Shift larger elements to the right
                 while (j >= 0 && arr[j].CompareTo(current) > 0)
                 {

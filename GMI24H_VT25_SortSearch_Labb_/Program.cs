@@ -10,7 +10,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
         static void Main(string[] args)
         {
             //Här är kod som kan användas om man vill jobba med dataströmmar (som ligger i Generator-katalogen och skapas som ström utifrån en given seed). 
-            const int numberOfPosts = 10;
+            const int numberOfPosts = 10000;
             //const int numberOfPosts = 20;
             const int seed = 123;
             //const int seed = 992;
@@ -50,15 +50,19 @@ namespace GMI24H_VT25_SortSearch_Labb_
             Console.WriteLine();
             stringSorter.SelectionSort(ipSelection);
             intSorter.MergeSort(errCodeMerge);
+            stringSorter.MergeSort(ipMerge);
             stringSorter.QuickSort(ipQuick);
-            stringSorter.QuickSort(ipBubble);
-            stringSorter.QuickSort(ipInsertion);
-            stringSorter.QuickSort(ipHeap);
+            stringSorter.BubbleSort(ipBubble);
+            stringSorter.InsertionSort(ipInsertion);
+            stringSorter.HeapSort(ipHeap);
             Console.WriteLine("Selection");
            foreach (var ipAddress in ipSelection.Take(10))
                 Console.WriteLine(ipAddress);
-            Console.WriteLine("Merge");
+            Console.WriteLine("MergeInt");
             foreach (var ipAddress in errCodeMerge.Take(10))
+                Console.WriteLine(ipAddress);
+            Console.WriteLine("MergeString");
+            foreach (var ipAddress in ipMerge.Take(10))
                 Console.WriteLine(ipAddress);
             Console.WriteLine("Quick");
             foreach (var ipAddress in ipQuick.Take(10))
