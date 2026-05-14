@@ -20,7 +20,30 @@ namespace AlgorithmLib
         /// <param name="collection">Listan som ska sorteras.</param>
         public void BubbleSort(IList<T> collection)
         {
-            throw new NotImplementedException();
+            T[] arr = collection.ToArray();
+            int n = arr.Length;
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                bool swapped = false;
+
+                for (int j = 0; j < n - 1 - i; j++)
+                {
+                    // CompareTo returns > 0 if left is greater than right
+                    if (arr[j].CompareTo(arr[j + 1]) > 0)
+                    {
+                        // Swap using tuple syntax
+                        (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
+                        swapped = true;
+                    }
+                }
+
+                if (!swapped) break;
+            }
+            for (int i = 0; i < n; i++)
+            {
+                collection[i] = arr[i];
+            }
         }
 
         /// <summary>
@@ -106,7 +129,44 @@ namespace AlgorithmLib
         /// <param name="collection">Listan som ska sorteras.</param>
         public void HeapSort(IList<T> collection)
         {
-            throw new NotImplementedException();
+            T[] arr = collection.ToArray();
+            int n = arr.Length;
+            // 1. Build a maxheap
+            for (int i = n / 2 - 1; i >= 0; i--)
+                Heapify(arr, n, i);
+
+            // 2. Extract elements from the heap one by one
+            for (int i = n - 1; i > 0; i--)
+            {
+                // Move current root (largest) to the end
+                (arr[0], arr[i]) = (arr[i], arr[0]);
+
+                // Re-heapify the reduced heap
+                Heapify(arr, i, 0);
+            }
+            for (int i = 0; i < n; i++)
+            {
+                collection[i] = arr[i];
+            }
+        }
+
+        private static void Heapify(T[] collection, int heapSize, int i)
+        {
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            if (left < heapSize && collection[left].CompareTo(collection[largest]) > 0)
+                largest = left;
+
+            if (right < heapSize && collection[right].CompareTo(collection[largest]) > 0)
+                largest = right;
+
+            if (largest != i)
+            {
+                (collection[i], collection[largest]) = (collection[largest], collection[i]);
+                Heapify(collection, heapSize, largest);
+            }
         }
 
         /// <summary>
@@ -115,7 +175,28 @@ namespace AlgorithmLib
         /// <param name="collection">Listan som ska sorteras.</param>
         public void InsertionSort(IList<T> collection)
         {
-            throw new NotImplementedException();
+            T[] arr = collection.ToArray();
+            int n = arr.Length;
+
+            for (int i = 1; i < n; i++)
+            {
+                T current = arr[i];
+                int j = i - 1;
+
+                // Shift larger elements to the right
+                while (j >= 0 && arr[j].CompareTo(current) > 0)
+                {
+                    arr[j + 1] = arr[j];
+                    j--;
+                }
+
+                // Insert current into its correct spot
+                arr[j + 1] = current;
+            }
+            for (int i = 0; i < n; i++)
+            {
+                collection[i] = arr[i];
+            }
         }
 
         /// Learned from https://www.geeksforgeeks.org/dsa/quick-sort-algorithm/

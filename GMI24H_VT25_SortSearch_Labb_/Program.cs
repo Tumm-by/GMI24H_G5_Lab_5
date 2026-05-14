@@ -10,11 +10,14 @@ namespace GMI24H_VT25_SortSearch_Labb_
         static void Main(string[] args)
         {
             //Här är kod som kan användas om man vill jobba med dataströmmar (som ligger i Generator-katalogen och skapas som ström utifrån en given seed). 
-            const int numberOfPosts = 10000000;
+            const int numberOfPosts = 10;
+            //const int numberOfPosts = 20;
             const int seed = 123;
+            //const int seed = 992;
 
-            var generator = new RandomLogGenerator();
+            ILogGenerator generator = new RandomLogGenerator();
             var logs = generator.GenerateLogs(numberOfPosts, seed).ToList();
+            //var logs2 = generator.GenerateLogs(numberOfPosts, seed).ToList();
 
 
             //Skriver ut de fem första posterna i listan med LogEntry-typer. 
@@ -27,7 +30,8 @@ namespace GMI24H_VT25_SortSearch_Labb_
             //Eftersom metoderna i SortingManager och SearchingManager-klasserna inte är statiska så behöver vi instansiera objekt av dessa klasser.
             //Eftersom vi gjort våra Sorting- och SearchingManager-klasserna generiska (<T>) behöver vi även ange vilken typ av data det
             //är som vi vill sortera eller söka efter. Vi anger datatyp i "diamanten" <>.
-            var sorter = new SortingManager<string>();
+            var stringSorter = new SortingManager<string>();
+            var intSorter = new SortingManager<int>();
             var searcher = new SearchingManager<string>();
 
             //Välj vilka data som ska plockas ut ur loggarna och jämföras. T.ex. Int eller strängar. Här behöver
@@ -35,7 +39,44 @@ namespace GMI24H_VT25_SortSearch_Labb_
             //när vi instansierade SortingManager och SearchingManager. I det här exemplet är det strängar.
             //Därför skapar vi en lista av strängar dit vi kan spara våra ip-adresser.
             //Vi använder LINQ för att selektera ut ip-adress-propertyn från varje enskilt logentry-post i logs-listan. 
-            List<string> ipAddresses = logs.Select(entry => entry.IpAddress).ToList();
+
+            List<string> ipSelection = logs.Select(entry => entry.IpAddress).ToList();
+            List<int> errCodeMerge = logs.Select(entry => entry.StatusCode).ToList();
+            List<string> ipMerge = logs.Select(entry => entry.IpAddress).ToList();
+            List<string> ipQuick = logs.Select(entry => entry.IpAddress).ToList();
+            List<string> ipBubble = logs.Select(entry => entry.IpAddress).ToList();
+            List<string> ipInsertion = logs.Select(entry => entry.IpAddress).ToList();
+            List<string> ipHeap = logs.Select(entry => entry.IpAddress).ToList();
+            Console.WriteLine();
+            stringSorter.SelectionSort(ipSelection);
+            intSorter.MergeSort(errCodeMerge);
+            stringSorter.QuickSort(ipQuick);
+            stringSorter.QuickSort(ipBubble);
+            stringSorter.QuickSort(ipInsertion);
+            stringSorter.QuickSort(ipHeap);
+            Console.WriteLine("Selection");
+           foreach (var ipAddress in ipSelection.Take(10))
+                Console.WriteLine(ipAddress);
+            Console.WriteLine("Merge");
+            foreach (var ipAddress in errCodeMerge.Take(10))
+                Console.WriteLine(ipAddress);
+            Console.WriteLine("Quick");
+            foreach (var ipAddress in ipQuick.Take(10))
+                Console.WriteLine(ipAddress);
+            Console.WriteLine("Bubble");
+            foreach (var ipAddress in ipBubble.Take(10))
+                Console.WriteLine(ipAddress);
+            Console.WriteLine("Insertion");
+            foreach (var ipAddress in ipInsertion.Take(10))
+                Console.WriteLine(ipAddress);
+            Console.WriteLine("Heap");
+            foreach (var ipAddress in ipHeap.Take(10))
+                Console.WriteLine(ipAddress);
+
+            /*foreach (var entry in logs.Take(5))
+            {
+                Console.WriteLine(entry);
+            }*/
 
             //Från våra objekt, sorter och searcher, kan vi sedan anropa olika metoder där vi skickar in vår data som parametrar.
             //Det finns ingen implementation av bubblesort i SortingManager just nu. Det här metodanropet är
