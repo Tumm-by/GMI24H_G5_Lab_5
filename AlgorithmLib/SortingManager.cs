@@ -129,6 +129,7 @@ namespace AlgorithmLib
                 arrayOfCollection[k] = scratchBuffer[k];
             }
         }
+
         /// <summary>
         /// Sorterar listan med Heap Sort-algoritmen.
         /// </summary>
