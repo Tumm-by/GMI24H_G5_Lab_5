@@ -1,5 +1,6 @@
 ﻿using AlgorithmLib;
 using System.Diagnostics;
+using System.Net;
 
 
 namespace GMI24H_VT25_SortSearch_Labb_
@@ -10,7 +11,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
         static void Main(string[] args)
         {
             //Här är kod som kan användas om man vill jobba med dataströmmar (som ligger i Generator-katalogen och skapas som ström utifrån en given seed). 
-            const int numberOfPosts = 10000;
+            const int numberOfPosts = 100000;
             //const int numberOfPosts = 20;
             const int seed = 123;
             //const int seed = 992;
@@ -48,15 +49,16 @@ namespace GMI24H_VT25_SortSearch_Labb_
             List<string> ipInsertion = logs.Select(entry => entry.IpAddress).ToList();
             List<string> ipHeap = logs.Select(entry => entry.IpAddress).ToList();
             Console.WriteLine();
+            /*Console.WriteLine("Selection");
             stringSorter.SelectionSort(ipSelection);
             intSorter.MergeSort(errCodeMerge);
             stringSorter.MergeSort(ipMerge);
             stringSorter.QuickSort(ipQuick);
             stringSorter.BubbleSort(ipBubble);
             stringSorter.InsertionSort(ipInsertion);
-            stringSorter.HeapSort(ipHeap);
-            Console.WriteLine("Selection");
-           foreach (var ipAddress in ipSelection.Take(10))
+            stringSorter.HeapSort(ipHeap);*/
+            /*Console.WriteLine("Selection");
+            foreach (var ipAddress in ipSelection.Take(10))
                 Console.WriteLine(ipAddress);
             Console.WriteLine("MergeInt");
             foreach (var ipAddress in errCodeMerge.Take(10))
@@ -75,7 +77,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
                 Console.WriteLine(ipAddress);
             Console.WriteLine("Heap");
             foreach (var ipAddress in ipHeap.Take(10))
-                Console.WriteLine(ipAddress);
+                Console.WriteLine(ipAddress);*/
 
             /*foreach (var entry in logs.Take(5))
             {
@@ -91,12 +93,39 @@ namespace GMI24H_VT25_SortSearch_Labb_
             //För att
             //vi ska kunna mäta hur lång tid det tar att köra algoritmen kan vi använda
             //stopwatch och timespan 
-            Stopwatch sw = Stopwatch.StartNew();
+            Stopwatch sw = new Stopwatch();
             //TIPS1: det här är ett lämpligt ställe att placera körningen/anropet av din algoritm.
+            /*sw.Restart();
+            stringSorter.SelectionSort(ipSelection);
             sw.Stop();
-            TimeSpan elapsedTime = sw.Elapsed; //TIPS2: här är det kanske en bra idé att göra någonting med data som sparats i elapsedTime... 
-                                               //Man kan ju till exempel tänka sig att det kan vara lämpligt att gå tillbaka till deluppgift 1 i labb 1
-                                               //och kolla hur ni gjorde med er data där...
+            Console.WriteLine($"Element:{numberOfPosts}\tSelectionSort\tTid:{sw.Elapsed.ToString()}");
+            sw.Restart();
+            intSorter.MergeSort(errCodeMerge);
+            sw.Stop();
+            Console.WriteLine($"Element:{numberOfPosts}\tMergeSortInt\tTid:{sw.Elapsed.ToString()}");
+            sw.Restart();
+            stringSorter.MergeSort(ipMerge);
+            sw.Stop();
+            Console.WriteLine($"Element:{numberOfPosts}\tMergeSortString\tTid:{sw.Elapsed.ToString()}");
+            sw.Restart();
+            stringSorter.QuickSort(ipQuick);
+            sw.Stop();
+            Console.WriteLine($"Element:{numberOfPosts}\tQuickSort\tTid:{sw.Elapsed.ToString()}");
+            sw.Restart();
+            stringSorter.BubbleSort(ipBubble);
+            sw.Stop();
+            Console.WriteLine($"Element:{numberOfPosts}\tBubbleSort\tTid:{sw.Elapsed.ToString()}");*/
+            sw.Restart();
+            stringSorter.InsertionSort(ipInsertion);
+            sw.Stop();
+            Console.WriteLine($"Element:{numberOfPosts}\tInsertionSort\tTid:{sw.Elapsed.ToString()}");
+            /*sw.Restart();
+            stringSorter.HeapSort(ipHeap);
+            sw.Stop();
+            Console.WriteLine($"Element:{numberOfPosts}\tHeapSort\tTid:{sw.Elapsed.ToString()}");*/
+            //TimeSpan elapsedTime = sw.Elapsed; //TIPS2: här är det kanske en bra idé att göra någonting med data som sparats i elapsedTime... 
+            //Man kan ju till exempel tänka sig att det kan vara lämpligt att gå tillbaka till deluppgift 1 i labb 1
+            //och kolla hur ni gjorde med er data där...
 
             Console.WriteLine($"Totalt antal rader inlästa: {logs.Count}");
         }
