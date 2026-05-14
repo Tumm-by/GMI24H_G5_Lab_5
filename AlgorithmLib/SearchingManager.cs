@@ -44,11 +44,21 @@ namespace AlgorithmLib
         /// <returns>Index för träff eller -1 om inget hittas.</returns>
         public int InterpolationSearch(IList<T> collection, T target)
         {
+            //if (collection == null) throw new ArgumentNullException($"{nameof(collection)} was null");
+            //if (target == null) throw new ArgumentNullException($"{nameof(target)} was null");
             T[] arrayOfCollection = collection.ToArray();
             int leftIndex = 0;
             int rightIndex = arrayOfCollection.Length - 1;
             int probeIndex = leftIndex;
-            double targetAsDouble = Convert.ToDouble(target);
+            double targetAsDouble;
+            try
+            {
+                targetAsDouble = Convert.ToDouble(target);
+            }
+            catch (InvalidCastException) 
+            {
+                throw new ArgumentException($"Argument {nameof(target)}={target} is non-numeric");
+            }
             double leftValue;
             double rightValue;
 
@@ -57,11 +67,15 @@ namespace AlgorithmLib
 
             //Target below min or above max
             if (isAscending) //Ascending array
+            {
                 if (target.CompareTo(arrayOfCollection[leftIndex]) < 0 || target.CompareTo(arrayOfCollection[rightIndex]) > 0)
                     return -1;
+            }
             else //Descending array
+            {
                 if (target.CompareTo(arrayOfCollection[leftIndex]) > 0 || target.CompareTo(arrayOfCollection[rightIndex]) < 0)
                     return -1;
+            }
 
             while (leftIndex <= rightIndex)
             {
@@ -75,27 +89,39 @@ namespace AlgorithmLib
                 }
 
                 probeIndex = (int)((targetAsDouble - leftValue) * (rightIndex - leftIndex) / (rightValue - leftValue));
-
+                probeIndex = Math.Max(leftIndex, Math.Min(probeIndex, rightIndex));
                 //Out of bounds
-                if (probeIndex < leftIndex || probeIndex > rightIndex)
-                    return -1;
-                else if (arrayOfCollection[probeIndex].Equals(target))
+                    /*if (probeIndex < leftIndex || probeIndex > rightIndex)
+                    {
+                        return -1;
+                    }*/
+                if (arrayOfCollection[probeIndex].Equals(target))
+                {
                     return probeIndex; //Match found
+                }
                     
                 //Shrink search span
                 if (isAscending) //Ascending array
-                { 
+                {
                     if (arrayOfCollection[probeIndex].CompareTo(target) < 0)
+                    {
                         leftIndex = probeIndex + 1;
+                    }
                     else
+                    {
                         rightIndex = probeIndex - 1;
+                    }
                 }
                 else // Descending array
                 {
                     if (arrayOfCollection[probeIndex].CompareTo(target) < 0)
+                    {
                         rightIndex = probeIndex - 1;
+                    }
                     else
+                    {
                         leftIndex = probeIndex + 1;
+                    }
                 }
             }
             return -1;
