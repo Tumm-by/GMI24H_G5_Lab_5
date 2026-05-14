@@ -1,6 +1,7 @@
 ﻿using AlgorithmLib;
 using System.Diagnostics;
 using System.Net;
+using System.Security.Cryptography;
 
 
 namespace GMI24H_VT25_SortSearch_Labb_
@@ -11,10 +12,10 @@ namespace GMI24H_VT25_SortSearch_Labb_
         static void Main(string[] args)
         {
             //Här är kod som kan användas om man vill jobba med dataströmmar (som ligger i Generator-katalogen och skapas som ström utifrån en given seed). 
-            const int numberOfPosts = 100000;
+            const int numberOfPosts = 5;
             //const int numberOfPosts = 20;
-            const int seed = 123;
-            //const int seed = 992;
+            //const int seed = 123;
+            const int seed = 992;
 
             ILogGenerator generator = new RandomLogGenerator();
             var logs = generator.GenerateLogs(numberOfPosts, seed).ToList();
@@ -33,7 +34,9 @@ namespace GMI24H_VT25_SortSearch_Labb_
             //är som vi vill sortera eller söka efter. Vi anger datatyp i "diamanten" <>.
             var stringSorter = new SortingManager<string>();
             var intSorter = new SortingManager<int>();
-            var searcher = new SearchingManager<string>();
+            var stringSearcher = new SearchingManager<string>();
+            var intSearcher = new SearchingManager<int>();
+
 
             //Välj vilka data som ska plockas ut ur loggarna och jämföras. T.ex. Int eller strängar. Här behöver
             //vi tänka på att välja samma datatyp som vi vill köra våra algoritmer på, dvs. de vi bestämde oss för
@@ -98,12 +101,25 @@ namespace GMI24H_VT25_SortSearch_Labb_
             /*sw.Restart();
             stringSorter.SelectionSort(ipSelection);
             sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tSelectionSort\tTid:{sw.Elapsed.ToString()}");
-            sw.Restart();
-            intSorter.MergeSort(errCodeMerge);
-            sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tMergeSortInt\tTid:{sw.Elapsed.ToString()}");
-            sw.Restart();
+            Console.WriteLine($"Element:{numberOfPosts}\tSelectionSort\tTid:{sw.Elapsed.ToString()}");*/
+            int target = 401;
+            for (int i = 0; i < 20; i++)
+            {
+                logs = generator.GenerateLogs(numberOfPosts, RandomNumberGenerator.GetInt32(999)).ToList();
+                errCodeMerge = logs.Select(entry => entry.StatusCode).ToList();
+                sw.Restart();
+                intSorter.MergeSort(errCodeMerge);
+                sw.Stop();
+                //Console.WriteLine($"Element:{numberOfPosts}\tMergeSortInt\tTid:{sw.Elapsed.ToString()}");
+                int index = intSearcher.InterpolationSearch(errCodeMerge, target);
+                Console.WriteLine($"{string.Join(",",errCodeMerge)}");
+                Console.WriteLine($"MergeSortInt\tTarget:{target}\t At index:{index}");
+                if (index == -1)
+                    Console.WriteLine($"Value at index:{index} = Not Found");
+                else
+                    Console.WriteLine($"Value at index:{index} = {errCodeMerge[index]}");
+            }
+            /*sw.Restart();
             stringSorter.MergeSort(ipMerge);
             sw.Stop();
             Console.WriteLine($"Element:{numberOfPosts}\tMergeSortString\tTid:{sw.Elapsed.ToString()}");
@@ -114,12 +130,12 @@ namespace GMI24H_VT25_SortSearch_Labb_
             sw.Restart();
             stringSorter.BubbleSort(ipBubble);
             sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tBubbleSort\tTid:{sw.Elapsed.ToString()}");*/
+            Console.WriteLine($"Element:{numberOfPosts}\tBubbleSort\tTid:{sw.Elapsed.ToString()}")
             sw.Restart();
             stringSorter.InsertionSort(ipInsertion);
             sw.Stop();
             Console.WriteLine($"Element:{numberOfPosts}\tInsertionSort\tTid:{sw.Elapsed.ToString()}");
-            /*sw.Restart();
+            sw.Restart();
             stringSorter.HeapSort(ipHeap);
             sw.Stop();
             Console.WriteLine($"Element:{numberOfPosts}\tHeapSort\tTid:{sw.Elapsed.ToString()}");*/
