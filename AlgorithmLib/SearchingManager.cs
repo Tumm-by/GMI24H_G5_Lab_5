@@ -35,6 +35,7 @@ namespace AlgorithmLib
             throw new NotImplementedException();
         }
 
+        /// Inspired by: https://www.geeksforgeeks.org/dsa/interpolation-search/
         /// <summary>
         /// Utför interpolationssökning. Endast för typer som är int-kompatibla.
         /// </summary>
@@ -43,7 +44,61 @@ namespace AlgorithmLib
         /// <returns>Index för träff eller -1 om inget hittas.</returns>
         public int InterpolationSearch(IList<T> collection, T target)
         {
-            throw new NotImplementedException();
+            T[] arrayOfCollection = collection.ToArray();
+            int leftIndex = 0;
+            int rightIndex = arrayOfCollection.Length - 1;
+            int probeIndex = leftIndex;
+            double targetAsDouble = Convert.ToDouble(target);
+            double leftValue;
+            double rightValue;
+
+            //Determines if the array is ascending or descending
+            bool isAscending = arrayOfCollection[0].CompareTo(arrayOfCollection[arrayOfCollection.Length - 1]) < 0;
+
+            //Target below min or above max
+            if (isAscending) //Ascending array
+                if (target.CompareTo(arrayOfCollection[leftIndex]) < 0 || target.CompareTo(arrayOfCollection[rightIndex]) > 0)
+                    return -1;
+            else //Descending array
+                if (target.CompareTo(arrayOfCollection[leftIndex]) > 0 || target.CompareTo(arrayOfCollection[rightIndex]) < 0)
+                    return -1;
+
+            while (leftIndex <= rightIndex)
+            {
+                leftValue = Convert.ToDouble(arrayOfCollection[leftIndex]);
+                rightValue = Convert.ToDouble(arrayOfCollection[rightIndex]);
+                if (rightValue.Equals(leftValue)) //Avoid division by zero
+                {   //Is target
+                    if (arrayOfCollection[leftIndex].Equals(target))
+                        return leftIndex;
+                    return -1;
+                }
+
+                probeIndex = (int)((targetAsDouble - leftValue) * (rightIndex - leftIndex) / (rightValue - leftValue));
+
+                //Out of bounds
+                if (probeIndex < leftIndex || probeIndex > rightIndex)
+                    return -1;
+                else if (arrayOfCollection[probeIndex].Equals(target))
+                    return probeIndex; //Match found
+                    
+                //Shrink search span
+                if (isAscending) //Ascending array
+                { 
+                    if (arrayOfCollection[probeIndex].CompareTo(target) < 0)
+                        leftIndex = probeIndex + 1;
+                    else
+                        rightIndex = probeIndex - 1;
+                }
+                else // Descending array
+                {
+                    if (arrayOfCollection[probeIndex].CompareTo(target) < 0)
+                        rightIndex = probeIndex - 1;
+                    else
+                        leftIndex = probeIndex + 1;
+                }
+            }
+            return -1;
         }
 
         /// <summary>
@@ -65,7 +120,14 @@ namespace AlgorithmLib
         /// <returns>Index för träff eller -1 om inget hittas.</returns>
         public int LinearSearch(IList<T> collection, T target)
         {
-            throw new NotImplementedException();
+            T[] arrayOfCollection = collection.ToArray();
+
+            for (int i = 0; i < arrayOfCollection.Length; i++) 
+            {
+                if (arrayOfCollection[i].Equals(target))
+                    return i;
+            }
+            return -1;
         }
     }
 }
