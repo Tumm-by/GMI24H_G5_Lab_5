@@ -195,25 +195,39 @@ namespace AlgorithmLib
                 return;
 
             T[] arr = collection.ToArray();
-            int n = arr.Length;
 
-            for (int i = 1; i < n; i++)
+            LinkedList<T> lLOfCollection = new LinkedList<T>();
+            LinkedListNode<T>? nodeInCollection;
+            lLOfCollection.AddFirst(arr[0]);
+            T current;
+
+            for (int i = 1; i < arr.Length; i++)
             {
-                T current = arr[i];
-                int j = i - 1;
-                // Shift larger elements to the right
-                while (j >= 0 && arr[j].CompareTo(current) > 0)
+                current = arr[i];
+                nodeInCollection = lLOfCollection.First;
+                if (current.CompareTo(lLOfCollection.Last.Value) >= 0)
                 {
-                    arr[j + 1] = arr[j];
-                    j--;
+                    lLOfCollection.AddLast(current);
+                    continue;
+                }
+                else if (current.CompareTo(lLOfCollection.First.Value) <= 0)
+                {
+                    lLOfCollection.AddFirst(current);
+                    continue;
                 }
 
-                // Insert current into its correct spot
-                arr[j + 1] = current;
+                while (current.CompareTo(nodeInCollection.Value) > 0)
+                {
+                    nodeInCollection = nodeInCollection.Next;
+                }
+
+                lLOfCollection.AddBefore(nodeInCollection, current);
             }
-            for (int i = 0; i < n; i++)
+            int j = 0;
+            foreach (T item in lLOfCollection)
             {
-                collection[i] = arr[i];
+                collection[j] = item;
+                j++;
             }
         }
 
