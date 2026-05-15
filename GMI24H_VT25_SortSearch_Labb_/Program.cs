@@ -44,13 +44,13 @@ namespace GMI24H_VT25_SortSearch_Labb_
             //Därför skapar vi en lista av strängar dit vi kan spara våra ip-adresser.
             //Vi använder LINQ för att selektera ut ip-adress-propertyn från varje enskilt logentry-post i logs-listan. 
 
-            List<string> ipSelection = logs.Select(entry => entry.IpAddress).ToList();
-            List<int> errCodeMerge = logs.Select(entry => entry.StatusCode).ToList();
-            List<string> ipMerge = logs.Select(entry => entry.IpAddress).ToList();
-            List<string> ipQuick = logs.Select(entry => entry.IpAddress).ToList();
-            List<string> ipBubble = logs.Select(entry => entry.IpAddress).ToList();
-            List<string> ipInsertion = logs.Select(entry => entry.IpAddress).ToList();
-            List<string> ipHeap = logs.Select(entry => entry.IpAddress).ToList();
+            IList<string> ipSelection = logs.Select(entry => entry.IpAddress).ToList();
+            IList<int> errCodeMerge = logs.Select(entry => entry.StatusCode).ToList();
+            IList<string> ipMerge = logs.Select(entry => entry.IpAddress).ToList();
+            IList<string> ipQuick = logs.Select(entry => entry.IpAddress).ToList();
+            IList<string> ipBubble = logs.Select(entry => entry.IpAddress).ToList();
+            IList<string> ipInsertion = logs.Select(entry => entry.IpAddress).ToList();
+            IList<string> ipHeap = logs.Select(entry => entry.IpAddress).ToList();
             Console.WriteLine();
             /*Console.WriteLine("Selection");
             stringSorter.SelectionSort(ipSelection);
@@ -86,7 +86,19 @@ namespace GMI24H_VT25_SortSearch_Labb_
             {
                 Console.WriteLine(entry);
             }*/
-
+            Logging logWriter = new Logging();
+            Dictionary<int, (int, TimeSpan, TimeSpan)> timeData = TimeTester.TimeTest<string>(stringSorter.QuickSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
+            logWriter.LoggingCSV(timeData, "QuickSort");
+            timeData = TimeTester.TimeTest<string>(stringSorter.MergeSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
+            logWriter.LoggingCSV(timeData, "MergeSort");
+            timeData = TimeTester.TimeTest<string>(stringSorter.HeapSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
+            logWriter.LoggingCSV(timeData, "HeapSort");
+            /*timeData = TimeTester.TimeTest<string>(stringSorter.InsertionSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
+            logWriter.LoggingCSV(timeData, "InsertionSort");
+            timeData = TimeTester.TimeTest<string>(stringSorter.SelectionSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
+            logWriter.LoggingCSV(timeData, "SelectionSort");
+            timeData = TimeTester.TimeTest<string>(stringSorter.BubbleSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
+            logWriter.LoggingCSV(timeData, "BubbleSort");*/
             //Från våra objekt, sorter och searcher, kan vi sedan anropa olika metoder där vi skickar in vår data som parametrar.
             //Det finns ingen implementation av bubblesort i SortingManager just nu. Det här metodanropet är
             //enbart en referens för att visa hur ni kan anropa en metod och skicka er sampledata som ni hämtar 
@@ -102,7 +114,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
             stringSorter.SelectionSort(ipSelection);
             sw.Stop();
             Console.WriteLine($"Element:{numberOfPosts}\tSelectionSort\tTid:{sw.Elapsed.ToString()}");*/
-            int target = 401;
+            /*int target = 401;
             for (int i = 0; i < 20; i++)
             {
                 logs = generator.GenerateLogs(numberOfPosts, RandomNumberGenerator.GetInt32(999)).ToList();
@@ -118,7 +130,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
                     Console.WriteLine($"Value at index:{index} = Not Found");
                 else
                     Console.WriteLine($"Value at index:{index} = {errCodeMerge[index]}");
-            }
+            }*/
             /*sw.Restart();
             stringSorter.MergeSort(ipMerge);
             sw.Stop();
