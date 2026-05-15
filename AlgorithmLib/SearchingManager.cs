@@ -21,7 +21,32 @@ namespace AlgorithmLib
         /// <returns>Index för träff eller -1 om inget hittas.</returns>
         public int BinarySearch(IList<T> collection, T target)
         {
-            throw new NotImplementedException();
+            T[] arr = collection.ToArray();
+            int n = arr.Length;
+
+            int low = 0;
+            int high = n - 1;
+
+
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                int cmp = arr[mid].CompareTo(target);
+
+                if (cmp == 0)
+                {
+                    return mid;
+                }
+                if (cmp < 0)
+                {
+                    low = mid + 1;
+                }
+                else 
+                { 
+                    high = mid - 1;
+                }
+            }
+            return -1;
         }
 
         /// <summary>
@@ -32,7 +57,25 @@ namespace AlgorithmLib
         /// <returns>Index för träff eller -1 om inget hittas.</returns>
         public int ExponentialSearch(IList<T> collection, T target)
         {
-            throw new NotImplementedException();
+            T[] arr = collection.ToArray();
+            int n = arr.Length;
+
+            if (arr[0].Equals(target))
+            {
+                return 0;
+            }
+
+            int i = 1;
+            while(i < n && arr[i].CompareTo(target) < 0)
+            {
+                i *= 2;
+            }
+            for (int i = 0; i < n; i++)
+            {
+                collection[i] = arr[i];
+            }
+
+            return BinarySearch(collection, target);
         }
 
         /// Inspired by: https://www.geeksforgeeks.org/dsa/interpolation-search/
@@ -135,7 +178,26 @@ namespace AlgorithmLib
         /// <returns>Index för träff eller -1 om inget hittas.</returns>
         public int JumpSearch(IList<T> collection, T target)
         {
-            throw new NotImplementedException();
+            T[] arr = collection.ToArray();
+            int n = arr.Length;
+
+            int step = (int)Math.Sqrt(n);
+            int prev = 0;
+
+            for(int minStep = Math.Min(step, n) - 1; arr[minStep].CompareTo(target) < 0; minStep = Math.Min(step, n) - 1)
+            {
+                prev = step;
+                step += (int)Math.Sqrt(n);
+                if (prev >= n)
+                {
+                    return -1;
+                }
+            }
+            if (arr[prev].CompareTo(target) == 0)
+            {
+                return prev;
+            }
+            return -1;
         }
 
         /// <summary>
