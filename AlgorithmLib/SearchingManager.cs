@@ -49,6 +49,7 @@ namespace AlgorithmLib
             return -1;
         }
 
+        /// Inspired by: https://www.geeksforgeeks.org/dsa/exponential-search/
         /// <summary>
         /// Utför exponential search i en sorterad lista.
         /// </summary>
@@ -70,12 +71,14 @@ namespace AlgorithmLib
             {
                 i *= 2;
             }
-            for (int i = 0; i < n; i++)
+            int low = i / 2;
+            T[] newArr = new T[Math.Min(i, n) - low];
+            for (int j = low; j < Math.Min(i, n); j++)
             {
-                collection[i] = arr[i];
+                newArr[j - low] = arr[j];
             }
 
-            return BinarySearch(collection, target);
+            return low + BinarySearch(newArr.ToList(), target);
         }
 
         /// Inspired by: https://www.geeksforgeeks.org/dsa/interpolation-search/
@@ -193,6 +196,16 @@ namespace AlgorithmLib
                     return -1;
                 }
             }
+
+            while (prev < Math.Min(step, n))
+            {
+                if (arr[prev].CompareTo(target) == 0)
+                {
+                    return prev;
+                }
+                prev++;
+            }
+
             if (arr[prev].CompareTo(target) == 0)
             {
                 return prev;

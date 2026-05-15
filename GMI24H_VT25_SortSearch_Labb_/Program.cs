@@ -12,7 +12,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
         static void Main(string[] args)
         {
             //Här är kod som kan användas om man vill jobba med dataströmmar (som ligger i Generator-katalogen och skapas som ström utifrån en given seed). 
-            const int numberOfPosts = 5;
+            const int numberOfPosts = 20;
             //const int numberOfPosts = 20;
             //const int seed = 123;
             const int seed = 992;
@@ -52,6 +52,8 @@ namespace GMI24H_VT25_SortSearch_Labb_
             IList<string> ipInsertion = logs.Select(entry => entry.IpAddress).ToList();
             IList<string> ipHeap = logs.Select(entry => entry.IpAddress).ToList();
             Console.WriteLine();
+
+
             /*Console.WriteLine("Selection");
             stringSorter.SelectionSort(ipSelection);
             intSorter.MergeSort(errCodeMerge);
@@ -86,7 +88,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
             {
                 Console.WriteLine(entry);
             }*/
-            Logging logWriter = new Logging();
+           /* Logging logWriter = new Logging();
             Dictionary<int, (int, TimeSpan, TimeSpan)> timeData = TimeTester.TimeTest<string>(stringSorter.QuickSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
             logWriter.LoggingCSV(timeData, "QuickSort");
             timeData = TimeTester.TimeTest<string>(stringSorter.MergeSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
@@ -114,7 +116,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
             stringSorter.SelectionSort(ipSelection);
             sw.Stop();
             Console.WriteLine($"Element:{numberOfPosts}\tSelectionSort\tTid:{sw.Elapsed.ToString()}");*/
-            /*int target = 401;
+            int target = 401;
             for (int i = 0; i < 20; i++)
             {
                 logs = generator.GenerateLogs(numberOfPosts, RandomNumberGenerator.GetInt32(999)).ToList();
@@ -123,14 +125,17 @@ namespace GMI24H_VT25_SortSearch_Labb_
                 intSorter.MergeSort(errCodeMerge);
                 sw.Stop();
                 //Console.WriteLine($"Element:{numberOfPosts}\tMergeSortInt\tTid:{sw.Elapsed.ToString()}");
-                int index = intSearcher.InterpolationSearch(errCodeMerge, target);
+                int index = intSearcher.ExponentialSearch(errCodeMerge, target);
                 Console.WriteLine($"{string.Join(",",errCodeMerge)}");
                 Console.WriteLine($"MergeSortInt\tTarget:{target}\t At index:{index}");
                 if (index == -1)
                     Console.WriteLine($"Value at index:{index} = Not Found");
                 else
                     Console.WriteLine($"Value at index:{index} = {errCodeMerge[index]}");
-            }*/
+
+                Console.WriteLine($"=================================================");
+
+            }
             /*sw.Restart();
             stringSorter.MergeSort(ipMerge);
             sw.Stop();
