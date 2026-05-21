@@ -67,7 +67,7 @@ namespace AlgorithmLib
             }
 
             int i = 1;
-            while(i < n && arr[i].CompareTo(target) < 0)
+            while(i < n && arr[i].CompareTo(target) <= 0)
             {
                 i *= 2;
             }
