@@ -11,8 +11,4 @@
     <ProjectReference Include="..\AlgorithmLib\AlgorithmLib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CSVs\" />
-  </ItemGroup>
-
 </Project>
