@@ -11,85 +11,159 @@ namespace GMI24H_VT25_SortSearch_Labb_
     {
         static void Main(string[] args)
         {
-            //Här är kod som kan användas om man vill jobba med dataströmmar (som ligger i Generator-katalogen och skapas som ström utifrån en given seed). 
-            const int numberOfPosts = 20;
-            //const int numberOfPosts = 20;
-            //const int seed = 123;
-            const int seed = 992;
+            //Testparametrar
+            const int seed = 123;
 
+            //Parametrar funktionalitet
+            const int numberOfPosts = 14;
+            const int intTarget = 450;
+            const string stringTarget = "172.16.0.1";
+
+            //Parametrar tidstester
+            const int iterations = 1000;
+            const int startSize = 100;
+            const int stepSizeSlowSortAlgs = 100;
+            const int maxSizeSlowSortAlgs = 10000;
+            const int stepSizeFastSortAlgs = 10000;
+            const int maxSizeFastSortAlgs = 1000000;
+            // 100 -> 10 0000 Step 100
+            int[] arraySizesSlowSortAlgs = Enumerable.Range(0, (maxSizeSlowSortAlgs - startSize) / stepSizeSlowSortAlgs + 1).Select(i => startSize + i * stepSizeSlowSortAlgs).ToArray();
+            // 100 -> 1000 0000 Step 10000
+            int[] arraySizesFastSortAlgs = Enumerable.Range(0, (maxSizeFastSortAlgs - startSize) / stepSizeFastSortAlgs + 1).Select(i => startSize + i * stepSizeSlowSortAlgs).ToArray();
+
+            //Skapar data
             ILogGenerator generator = new RandomLogGenerator();
-            var logs = generator.GenerateLogs(numberOfPosts, seed).ToList();
-            //var logs2 = generator.GenerateLogs(numberOfPosts, seed).ToList();
 
-
-            //Skriver ut de fem första posterna i listan med LogEntry-typer. 
-            Console.WriteLine("förhandsvisning av loggdata:");
-            foreach (var entry in logs.Take(5))
-            {
-                Console.WriteLine(entry);
-            }
-
-            //Eftersom metoderna i SortingManager och SearchingManager-klasserna inte är statiska så behöver vi instansiera objekt av dessa klasser.
-            //Eftersom vi gjort våra Sorting- och SearchingManager-klasserna generiska (<T>) behöver vi även ange vilken typ av data det
-            //är som vi vill sortera eller söka efter. Vi anger datatyp i "diamanten" <>.
+            //TestInstanser
             var stringSorter = new SortingManager<string>();
             var intSorter = new SortingManager<int>();
             var stringSearcher = new SearchingManager<string>();
             var intSearcher = new SearchingManager<int>();
 
+            //Data för funktionalitetstester
+            var logs = generator.GenerateLogs(numberOfPosts, seed).ToList();
+            LogEntry targetEntry = new LogEntry();
+            targetEntry.IpAddress = "172.16.0.1";
+            targetEntry.StatusCode = 450;
+            logs.Add(targetEntry);
 
-            //Välj vilka data som ska plockas ut ur loggarna och jämföras. T.ex. Int eller strängar. Här behöver
-            //vi tänka på att välja samma datatyp som vi vill köra våra algoritmer på, dvs. de vi bestämde oss för
-            //när vi instansierade SortingManager och SearchingManager. I det här exemplet är det strängar.
-            //Därför skapar vi en lista av strängar dit vi kan spara våra ip-adresser.
-            //Vi använder LINQ för att selektera ut ip-adress-propertyn från varje enskilt logentry-post i logs-listan. 
+            //Kontrolldata
+            IList<string> ipControl = logs.Select(entry => entry.IpAddress).ToList();
+            IList<int> errCodeControl = logs.Select(entry => entry.StatusCode).ToList();
 
+            //Strängdata
             IList<string> ipSelection = logs.Select(entry => entry.IpAddress).ToList();
-            IList<int> errCodeMerge = logs.Select(entry => entry.StatusCode).ToList();
             IList<string> ipMerge = logs.Select(entry => entry.IpAddress).ToList();
             IList<string> ipQuick = logs.Select(entry => entry.IpAddress).ToList();
             IList<string> ipBubble = logs.Select(entry => entry.IpAddress).ToList();
             IList<string> ipInsertion = logs.Select(entry => entry.IpAddress).ToList();
             IList<string> ipHeap = logs.Select(entry => entry.IpAddress).ToList();
-            Console.WriteLine();
+
+            //Intdata
+            IList<int> errCodeSelection = logs.Select(entry => entry.StatusCode).ToList();
+            IList<int> errCodeMerge = logs.Select(entry => entry.StatusCode).ToList();
+            IList<int> errCodeQuick = logs.Select(entry => entry.StatusCode).ToList();
+            IList<int> errCodeBubble = logs.Select(entry => entry.StatusCode).ToList();
+            IList<int> errCodeInsertion = logs.Select(entry => entry.StatusCode).ToList();
+            IList<int> errCodeHeap = logs.Select(entry => entry.StatusCode).ToList();
 
 
-            /*Console.WriteLine("Selection");
+            Console.WriteLine("==== FunktionalitetsTest Sortering Strängar ====");
+            //Sorting Controls
+            ipControl = ipControl.Order().ToList();
+
+            //Sorting with sortfunctions
             stringSorter.SelectionSort(ipSelection);
-            intSorter.MergeSort(errCodeMerge);
             stringSorter.MergeSort(ipMerge);
             stringSorter.QuickSort(ipQuick);
             stringSorter.BubbleSort(ipBubble);
             stringSorter.InsertionSort(ipInsertion);
-            stringSorter.HeapSort(ipHeap);*/
-            /*Console.WriteLine("Selection");
-            foreach (var ipAddress in ipSelection.Take(10))
-                Console.WriteLine(ipAddress);
-            Console.WriteLine("MergeInt");
-            foreach (var ipAddress in errCodeMerge.Take(10))
-                Console.WriteLine(ipAddress);
-            Console.WriteLine("MergeString");
-            foreach (var ipAddress in ipMerge.Take(10))
-                Console.WriteLine(ipAddress);
-            Console.WriteLine("Quick");
-            foreach (var ipAddress in ipQuick.Take(10))
-                Console.WriteLine(ipAddress);
-            Console.WriteLine("Bubble");
-            foreach (var ipAddress in ipBubble.Take(10))
-                Console.WriteLine(ipAddress);
-            Console.WriteLine("Insertion");
-            foreach (var ipAddress in ipInsertion.Take(10))
-                Console.WriteLine(ipAddress);
-            Console.WriteLine("Heap");
-            foreach (var ipAddress in ipHeap.Take(10))
-                Console.WriteLine(ipAddress);*/
+            stringSorter.HeapSort(ipHeap);
+            Console.Write("Control\t\t");
+            foreach (var ipAddress in ipControl)
+                Console.Write($"{ipAddress}, ");
+            Console.WriteLine();
+            Console.Write("Selection\t");
+            foreach (var ipAddress in ipSelection)
+                Console.Write($"{ipAddress}, ");
+            Console.WriteLine();
+            Console.Write("MergeString\t");
+            foreach (var ipAddress in ipMerge)
+                Console.Write($"{ipAddress}, ");
+            Console.WriteLine();
+            Console.Write("Quick\t\t");
+            foreach (var ipAddress in ipQuick)
+                Console.Write($"{ipAddress}, ");
+            Console.WriteLine();
+            Console.Write("Bubble\t\t");
+            foreach (var ipAddress in ipBubble)
+                Console.Write($"{ipAddress}, ");
+            Console.WriteLine();
+            Console.Write("Insertion\t");
+            foreach (var ipAddress in ipInsertion)
+                Console.Write($"{ipAddress}, ");
+            Console.WriteLine();
+            Console.Write("Heap\t\t");
+            foreach (var ipAddress in ipHeap)
+                Console.Write($"{ipAddress}, ");
+            Console.WriteLine("\n");
+
+            Console.WriteLine("==== FunktionalitetsTest Sök Strängar ====");
+            Console.Write($"Control: {ipControl.IndexOf(stringTarget)}, ");
+            Console.Write($"Binary: {stringSearcher.BinarySearch(ipControl, stringTarget)}, ");
+            Console.Write($"Exponential: {stringSearcher.ExponentialSearch(ipControl, stringTarget)}, ");
+            Console.Write($"Jump: {stringSearcher.JumpSearch(ipControl, stringTarget)}, ");
+            Console.Write($"Linear: {stringSearcher.LinearSearch(ipControl, stringTarget)}, ");
+            Console.WriteLine("\n");
+
+
+            Console.WriteLine("==== FunktionalitetsTest Sortering Intar ====");
+            //Sorting Control
+            errCodeControl = errCodeControl.Order().ToList();
+
+            //Sorting with sortfunctions
+            intSorter.SelectionSort(errCodeSelection);
+            intSorter.MergeSort(errCodeMerge);
+            intSorter.QuickSort(errCodeQuick);
+            intSorter.BubbleSort(errCodeBubble);
+            intSorter.InsertionSort(errCodeInsertion);
+            intSorter.HeapSort(errCodeHeap);
+            Console.Write("Control\t\t");
+            foreach (var errCode in errCodeControl)
+                Console.Write($"{errCode}, ");
+            Console.WriteLine();
+            Console.Write("Selection\t");
+            foreach (var errCode in errCodeSelection)
+                Console.Write($"{errCode}, ");
+            Console.WriteLine();
+            Console.Write("MergeString\t");
+            foreach (var errCode in errCodeMerge)
+                Console.Write($"{errCode}, ");
+            Console.WriteLine();
+            Console.Write("Quick\t\t");
+            foreach (var errCode in errCodeQuick)
+                Console.Write($"{errCode}, ");
+            Console.WriteLine();
+            Console.Write("Bubble\t\t");
+            foreach (var errCode in errCodeBubble)
+                Console.Write($"{errCode}, ");
+            Console.WriteLine();
+            Console.Write("Insertion\t");
+            foreach (var errCode in errCodeInsertion)
+                Console.Write($"{errCode}, ");
+            Console.WriteLine();
+            Console.Write("Heap\t\t");
+            foreach (var errCode in errCodeHeap)
+                Console.Write($"{errCode}, ");
+            Console.WriteLine();
 
             /*foreach (var entry in logs.Take(5))
             {
                 Console.WriteLine(entry);
             }*/
-           /* Logging logWriter = new Logging();
-            Dictionary<int, (int, TimeSpan, TimeSpan)> timeData = TimeTester.TimeTest<string>(stringSorter.QuickSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
+            Logging logWriter = new Logging();
+            Dictionary<int, (int, TimeSpan, TimeSpan)> timeData;
+            /*timeData = TimeTester.TimeTest<string>(stringSorter.QuickSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
             logWriter.LoggingCSV(timeData, "QuickSort");
             timeData = TimeTester.TimeTest<string>(stringSorter.MergeSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
             logWriter.LoggingCSV(timeData, "MergeSort");
@@ -101,6 +175,10 @@ namespace GMI24H_VT25_SortSearch_Labb_
             logWriter.LoggingCSV(timeData, "SelectionSort");
             timeData = TimeTester.TimeTest<string>(stringSorter.BubbleSort, "IpAddress", 200, [1000, 2000, 3000, 4000, 5000, 30000], 123);
             logWriter.LoggingCSV(timeData, "BubbleSort");*/
+
+            timeData = TimeTester.TimeTestSearch(stringSearcher.BinarySearch, "IpAddress", "127.0.0.1", 200, [100, 1000, 10000], 123, true);
+            logWriter.LoggingCSV(timeData, "BinarySearchMiddle");
+
             //Från våra objekt, sorter och searcher, kan vi sedan anropa olika metoder där vi skickar in vår data som parametrar.
             //Det finns ingen implementation av bubblesort i SortingManager just nu. Det här metodanropet är
             //enbart en referens för att visa hur ni kan anropa en metod och skicka er sampledata som ni hämtar 
@@ -116,7 +194,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
             stringSorter.SelectionSort(ipSelection);
             sw.Stop();
             Console.WriteLine($"Element:{numberOfPosts}\tSelectionSort\tTid:{sw.Elapsed.ToString()}");*/
-            int target = 401;
+            /*int target = 401;
             for (int i = 0; i < 20; i++)
             {
                 logs = generator.GenerateLogs(numberOfPosts, RandomNumberGenerator.GetInt32(999)).ToList();
