@@ -5,7 +5,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
 {
     class TimeTester
     {
-        public static Dictionary<int, (int, TimeSpan, TimeSpan)> TimeTest<T>(Action<IList<T>> sortFunction,string propertyName, int iterations,int[] arraySizes,int seed, bool showProgress=false)
+        public static Dictionary<int, (int, TimeSpan, TimeSpan)> TimeTestSort<T>(Action<IList<T>> sortFunction,string propertyName, int iterations,int[] arraySizes,int seed, bool showProgress=false)
         {
             
             Dictionary<int, (int, TimeSpan, TimeSpan)> testData = new Dictionary<int, (int, TimeSpan, TimeSpan)>();
@@ -27,6 +27,28 @@ namespace GMI24H_VT25_SortSearch_Labb_
             return testData;
         }
 
+        public static Dictionary<int, (int, TimeSpan, TimeSpan)> TimeTestSearch<T>(Func<IList<T>, T, int> searchFunction, string propertyName, T target,int iterations, int[] arraySizes, int seed, bool sortCollection = false)
+        {
+
+            Dictionary<int, (int, TimeSpan, TimeSpan)> testData = new Dictionary<int, (int, TimeSpan, TimeSpan)>();
+            foreach (int arraySize in arraySizes)
+            {
+                ILogGenerator generator = new RandomLogGenerator();
+                var logs = generator.GenerateLogs(arraySize, seed);
+                var property = typeof(LogEntry).GetProperty(propertyName);
+                IList<T> collection = logs.Select(x => (T)property?.GetValue(x)).ToList();
+                if (sortCollection)
+                {
+                    collection.Order<T>();
+                }
+                TimeSpan[] executionTimes = ExecutionTimes<T>(searchFunction, collection, target, iterations);
+                TimeSpan averageExecutionTime = AverageExecutionTime(executionTimes);
+                TimeSpan stdDeviation = StandardDeviation(executionTimes);
+                testData.Add(arraySize, (iterations, averageExecutionTime, stdDeviation));
+            }
+            return testData;
+        }
+
         static TimeSpan[] ExecutionTimes<T>(Action<IList<T>> timeTestable, IList<T> collection, int iterations)
         {
             System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
@@ -37,6 +59,21 @@ namespace GMI24H_VT25_SortSearch_Labb_
                 IList<T> logsToSort = collection.ToList();
                 stopWatch.Restart();
                 timeTestable(logsToSort);
+                stopWatch.Stop();
+                executionTimes[i] = stopWatch.Elapsed;
+            }
+            return executionTimes;
+        }
+
+        static TimeSpan[] ExecutionTimes<T>(Func<IList<T>, T, int> timeTestable, IList<T> collection, T target,int iterations)
+        {
+            System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+            TimeSpan[] executionTimes = new TimeSpan[iterations];
+
+            for (int i = 0; i < iterations; i++)
+            {
+                stopWatch.Restart();
+                timeTestable(collection, target);
                 stopWatch.Stop();
                 executionTimes[i] = stopWatch.Elapsed;
             }
