@@ -292,7 +292,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
             logWriter.LoggingCSV(timeData, $"ExponentialSearchIntLateT{target}");
             timeData = TimeTester.TimeTestSearch<int>(intSearcher.InterpolationSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
             logWriter.LoggingCSV(timeData, $"InterPolationSearchIntLateT{target}");
-            
+
             timeData = TimeTester.TimeTestSearch<int>(intSearcher.JumpSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);
             logWriter.LoggingCSV(timeData, $"JumpSearchIntLateT{target}");
             timeData = TimeTester.TimeTestSearch<int>(intSearcher.LinearSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);

@@ -13,6 +13,7 @@ namespace AlgorithmLib
 
     public class SearchingManager<T> : ISearchingManager<T> where T : IComparable<T>
     {
+        ///https://www.geeksforgeeks.org/dsa/binary-search/
         /// <summary>
         /// Utför binär sökning i en sorterad lista.
         /// </summary>
@@ -98,12 +99,14 @@ namespace AlgorithmLib
             int probeIndex = leftIndex;
             double targetAsDouble;
             try
-            {
+            {   //Test if int-compatible
                 targetAsDouble = Convert.ToDouble(target);
+                if (Math.Abs(targetAsDouble % 1) > 1e-9)//Recommended by co-pilot over == to avoid errors with floats.
+                    throw new ArgumentException($"Argument {nameof(target)}={target} is not int-Compatible");
             }
-            catch (InvalidCastException) 
+            catch (InvalidCastException)
             {
-                throw new ArgumentException($"Argument {nameof(target)}={target} is non-numeric");
+                throw new ArgumentException($"Argument {nameof(target)}={target} is not convertible");
             }
             double leftValue;
             double rightValue;
@@ -136,16 +139,16 @@ namespace AlgorithmLib
 
                 probeIndex = (int)((targetAsDouble - leftValue) * (rightIndex - leftIndex) / (rightValue - leftValue));
                 probeIndex = Math.Max(leftIndex, Math.Min(probeIndex, rightIndex));//Clamp
-                //Out of bounds
-                    /*if (probeIndex < leftIndex || probeIndex > rightIndex)
-                    {
-                        return -1;
-                    }*/
+                                                                                   
+                /*if (probeIndex < leftIndex || probeIndex > rightIndex)//Out of Bounds
+                {
+                    return -1;
+                }*/
                 if (arrayOfCollection[probeIndex].Equals(target))
                 {
                     return probeIndex; //Match found
                 }
-                    
+
                 //Shrink search span
                 if (isAscending) //Ascending array
                 {
@@ -173,6 +176,7 @@ namespace AlgorithmLib
             return -1;
         }
 
+        ///https://www.geeksforgeeks.org/dsa/jump-search/
         /// <summary>
         /// Utför jump search i en sorterad lista.
         /// </summary>

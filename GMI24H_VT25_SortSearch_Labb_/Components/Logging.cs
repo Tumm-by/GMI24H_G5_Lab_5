@@ -1,9 +1,16 @@
 ﻿namespace GMI24H_VT25_SortSearch_Labb_
 {
+    /// <summary>
+    /// Används för att skapa skapa loggar av tidsdata i csv format.
+    /// </summary>
     class Logging
     {
         public Logging() { }
-
+        /// <summary>
+        /// Skriver en datalog till en csv fil
+        /// </summary>
+        /// <param name="dataLog">dataloggen, en dictionary</param>
+        /// <param name="fileName">önskat filnamn</param>
         public void LoggingCSV (Dictionary<int, (int, TimeSpan, TimeSpan)> dataLog, string fileName)
         {
             using (StreamWriter writer = new StreamWriter($"../../../CSVs/{fileName}.csv"))

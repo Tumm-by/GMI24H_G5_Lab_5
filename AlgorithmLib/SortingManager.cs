@@ -14,6 +14,7 @@ namespace AlgorithmLib
 
     public class SortingManager<T> : ISortingManager<T> where T : IComparable<T>
     {
+        /// https://www.geeksforgeeks.org/dsa/bubble-sort-algorithm/
         /// <summary>
         /// Sorterar listan med Bubble Sort-algoritmen.
         /// </summary>
@@ -52,6 +53,8 @@ namespace AlgorithmLib
             }
         }
 
+        ///https://www.geeksforgeeks.org/dsa/merge-sort/
+        /// Wrapper
         /// <summary>
         /// Sorterar listan med Merge Sort-algoritmen.
         /// </summary>
@@ -73,6 +76,7 @@ namespace AlgorithmLib
                 collection[i] = arrayOfCollection[i];             //How good or bad this is depends on the underlying instance type.
         }
 
+        /// https://www.geeksforgeeks.org/dsa/merge-sort/
         /// <summary>
         /// Recursive MergeSort using a scratchbuffer.
         /// </summary>
@@ -129,7 +133,7 @@ namespace AlgorithmLib
                 arrayOfCollection[k] = scratchBuffer[k];
             }
         }
-
+        /// https://www.geeksforgeeks.org/dsa/heap-sort/
         /// <summary>
         /// Sorterar listan med Heap Sort-algoritmen.
         /// </summary>
@@ -162,7 +166,13 @@ namespace AlgorithmLib
                 collection[i] = arr[i];
             }
         }
-
+        ///https://www.geeksforgeeks.org/dsa/heap-sort/
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="heapSize"></param>
+        /// <param name="i"></param>
         private static void Heapify(T[] collection, int heapSize, int i)
         {
             int largest = i;
@@ -181,7 +191,7 @@ namespace AlgorithmLib
                 Heapify(collection, heapSize, largest);
             }
         }
-
+        /// https://www.geeksforgeeks.org/dsa/insertion-sort-algorithm/
         /// <summary>
         /// Sorterar listan med Insertion Sort-algoritmen.
         /// </summary>
@@ -301,6 +311,7 @@ namespace AlgorithmLib
             QuickSort(arrayOfList, r + 1, rightIndex);
         }
 
+        ///https://www.geeksforgeeks.org/dsa/selection-sort-algorithm-2/
         /// <summary>
         /// Sorterar listan med Selection Sort-algoritmen.
         /// </summary>
