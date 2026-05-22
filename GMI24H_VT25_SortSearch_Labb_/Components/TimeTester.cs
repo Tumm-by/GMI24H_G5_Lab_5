@@ -3,48 +3,101 @@ using System.Reflection;
 
 namespace GMI24H_VT25_SortSearch_Labb_
 {
+    /// <summary>
+    /// Tests sort and search using functions provided to TimeTesterSort and TimeTesterSearch. Returns Time data Mean Execution Time, Standard Deviation, Iterations and Size of the collection
+    /// </summary>
     class TimeTester
     {
-        public static Dictionary<int, (int, TimeSpan, TimeSpan)> TimeTestSort<T>(Action<IList<T>> sortFunction,string propertyName, int iterations,int[] arraySizes,int seed, bool showProgress=false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sortFunction">The sorting function to test</param>
+        /// <param name="propertyName">The name of the property used as the value for sorting</param>
+        /// <param name="iterations">Number of iterations each cycle should perform</param>
+        /// <param name="arraySizes">Array containing the desired sizes of the test collections</param>
+        /// <param name="seed">Seed given to the randomizer</param>
+        /// <param name="sortCollection">Should the collection be sorted before it's used by the function?</param>
+        /// <returns></returns>
+        public static Dictionary<int, (int, TimeSpan, TimeSpan)> TimeTestSort<T>(Action<IList<T>> sortFunction,string propertyName, int iterations,int[] arraySizes,int seed, bool sortCollection=false)
         {
             
             Dictionary<int, (int, TimeSpan, TimeSpan)> testData = new Dictionary<int, (int, TimeSpan, TimeSpan)>();
+            ILogGenerator generator = new RandomLogGenerator();
+
+            //Warm up prep
+            var logs = generator.GenerateLogs(1000, seed);
+            var property = typeof(LogEntry).GetProperty(propertyName);
+            IList<T> collection = logs.Select(x => (T)property?.GetValue(x)).ToList();
+            List<T> sortWarmUp;
+            for (int i = 0; i < 100; i++) //Warm up
+            {
+                sortWarmUp = collection.ToList();
+                sortFunction(sortWarmUp);
+            }
+
             foreach (int arraySize in arraySizes)
             {
-                ILogGenerator generator = new RandomLogGenerator();
-                var logs = generator.GenerateLogs(arraySize, seed);
-                var property = typeof(LogEntry).GetProperty(propertyName);
-                IList<T> collection = logs.Select(x => (T)property?.GetValue(x)).ToList();
-                if (showProgress)
+                logs = generator.GenerateLogs(arraySize, seed);
+                property = typeof(LogEntry).GetProperty(propertyName);
+                collection = logs.Select(x => (T)property?.GetValue(x)).ToList();
+                if (sortCollection)
                 {
-                    Console.WriteLine($"Current ArraySize:{arraySize}");
+                    collection = collection.Order().ToList();
                 }
                 TimeSpan[] executionTimes = ExecutionTimes<T>(sortFunction, collection, iterations);
                 TimeSpan averageExecutionTime = AverageExecutionTime(executionTimes);
                 TimeSpan stdDeviation = StandardDeviation(executionTimes);
                 testData.Add(arraySize,(iterations, averageExecutionTime, stdDeviation));
+                Console.WriteLine($"Size: {arraySize}");
             }
             return testData;
         }
 
-        public static Dictionary<int, (int, TimeSpan, TimeSpan)> TimeTestSearch<T>(Func<IList<T>, T, int> searchFunction, string propertyName, T target,int iterations, int[] arraySizes, int seed, bool sortCollection = false)
+        /// <summary>
+        /// Function that tests and returns time data for test performed by and on the function provided by the user. Mean Execution Time, Standard Deviaion, Size of collection for each datapoitn, and iterations performed.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="searchFunction">The sorting function to test</param>
+        /// <param name="propertyName">The name of the property used as the value for sorting</param>
+        /// <param name="target">The value sought after by the search function</param>
+        /// <param name="iterations">Number of iterations each cycle should perform</param>
+        /// <param name="arraySizes">Array containing the desired sizes of the test collections</param>
+        /// <param name="seed">Seed given to the randomizer</param>
+        /// <param name="sortCollection">Should the collection be sorted before it's used by the function?</param>
+        /// <param name="addTarget">Adds the target to the collection if true</param>
+        public static Dictionary<int, (int, TimeSpan, TimeSpan)> TimeTestSearch<T>(Func<IList<T>, T, int> searchFunction, string propertyName, T target,int iterations,int[] arraySizes, int seed, bool sortCollection = false, bool addTarget = false)
         {
 
             Dictionary<int, (int, TimeSpan, TimeSpan)> testData = new Dictionary<int, (int, TimeSpan, TimeSpan)>();
+            ILogGenerator generator = new RandomLogGenerator();
+            
+            //Warm up prep
+            var logs = generator.GenerateLogs(1000, seed);
+            var property = typeof(LogEntry).GetProperty(propertyName);
+            IList<T> collection = logs.Select(x => (T)property?.GetValue(x)).ToList();
+            collection = collection.Order().ToList();
+            for (int i = 0; i < 100; i++)
+                searchFunction(collection, target); //Warm up
+
             foreach (int arraySize in arraySizes)
             {
-                ILogGenerator generator = new RandomLogGenerator();
-                var logs = generator.GenerateLogs(arraySize, seed);
-                var property = typeof(LogEntry).GetProperty(propertyName);
-                IList<T> collection = logs.Select(x => (T)property?.GetValue(x)).ToList();
+                logs = generator.GenerateLogs(arraySize, seed);
+                property = typeof(LogEntry).GetProperty(propertyName);
+                collection = logs.Select(x => (T)property?.GetValue(x)).ToList();
+                if (addTarget)
+                {
+                    collection[0] = target;
+                }
                 if (sortCollection)
                 {
-                    collection.Order<T>();
+                    collection = collection.Order().ToList();
                 }
                 TimeSpan[] executionTimes = ExecutionTimes<T>(searchFunction, collection, target, iterations);
                 TimeSpan averageExecutionTime = AverageExecutionTime(executionTimes);
                 TimeSpan stdDeviation = StandardDeviation(executionTimes);
                 testData.Add(arraySize, (iterations, averageExecutionTime, stdDeviation));
+                Console.WriteLine($"Size: {arraySize}");
             }
             return testData;
         }

@@ -9,7 +9,7 @@ pd.set_option('display.max_rows', None)
 
 # In[2]:
 
-csv_folder = os.path.join(os.getcwd(),"CSVs")
+csv_folder = os.path.join(os.getcwd(),"CSVs/")
 
 all_dfs = []
 for entry in os.scandir(csv_folder):
@@ -30,4 +30,4 @@ for filename, df in all_dfs:
     plt.ylabel("Mean time (microseconds)")
     plt.xlabel("Size")
     plt.legend()
-    plt.savefig(f"Graphs/{filename}.png")
+    plt.savefig(f"Graphs/{filename[:-3]}.png")

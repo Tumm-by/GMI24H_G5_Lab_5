@@ -16,25 +16,41 @@ namespace GMI24H_VT25_SortSearch_Labb_
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US"); //Swedish's use of ';' as a separator and ',' as a decimal is problematic.
 
             //Testparametrar
-            const int seed = 123;
+            const int SEED = 123;
 
             //Parametrar funktionalitet
-            const int numberOfPosts = 14;
-            const int intTarget = 450;
-            const string stringTarget = "172.16.0.1";
+            const int NUMBER_OF_POSTS = 14;
+            const int INT_TARGET = 450;
+            const string STRING_TARGET = "172.16.0.1";
 
             //Parametrar tidstester
-            const int iterations = 100;
-            const int startSize = 100;
-            const int stepSizeSlowSortAlgs = 100;
-            const int maxSizeSlowSortAlgs = 1000;
-            const int stepSizeFastSortAlgs = 10000;
-            const int maxSizeFastSortAlgs = 100000;
-            // 100 -> 10 0000 Step 100
-            int[] arraySizesSlowSortAlgs = Enumerable.Range(0, (maxSizeSlowSortAlgs - startSize) / stepSizeSlowSortAlgs + 1).Select(i => startSize + i * stepSizeSlowSortAlgs).ToArray();
-            // 100 -> 1000 0000 Step 10000
-            int[] arraySizesFastSortAlgs = Enumerable.Range(0, (maxSizeFastSortAlgs - startSize) / stepSizeFastSortAlgs + 1).Select(i => startSize + i * stepSizeSlowSortAlgs).ToArray();
-
+            const int ITERATIONS_SORT = 100;
+            const int ITERATIONS_SEARCH = 1000;
+            const int START_SIZE = 100;
+            const int STEP_SIZE_SLOW_ALGORITHM = 150;
+            const int MAX_SIZE_SLOW_ALGORITHM = 3000;
+            const int STEP_SIZE_INSERTION = 250;
+            const int MAX_SIZE_INSERTION_SORT = 5000;
+            const int STEP_SIZE_FAST_SORT_ALGORITHM = 25000;
+            const int MAX_SIZE_FAST_SORT_ALGORITHM = 500000;
+            const int STEP_SIZE_FAST_SEARCH_ALGORITHM = 250000;
+            const int MAX_SIZE_FAST_SEARCH_ALGORITHM = 5000000;
+            const int EARLY_INT = 200;
+            const int MIDDLE_INT = 401;
+            const int LATE_INT = 500;
+            const int MISSING_INT = 450;
+            const string EARLY_STRING = "10.0.0.5";
+            const string MIDDLE_STRING = "127.0.0.1";
+            const string LATE_STRING = "192.168.1.10";
+            int[] arraySizesInsertionSort = new int[] { START_SIZE }; //100+ 250 -> 5000
+            arraySizesInsertionSort = arraySizesInsertionSort.Concat(Enumerable.Range(1, (MAX_SIZE_INSERTION_SORT - START_SIZE) / STEP_SIZE_INSERTION + 1).Select(i => i * STEP_SIZE_INSERTION).ToArray()).ToArray();
+            int[] arraySizesSlowSortAlgs = new int[] { START_SIZE }; //100+ 150 -> 3000
+            arraySizesSlowSortAlgs = arraySizesSlowSortAlgs.Concat(Enumerable.Range(1, (MAX_SIZE_SLOW_ALGORITHM - START_SIZE) / STEP_SIZE_SLOW_ALGORITHM + 1).Select(i =>  i * STEP_SIZE_SLOW_ALGORITHM).ToArray()).ToArray();
+            int[] arraySizesFastSortAlgs = new int[] { START_SIZE }; //100+ 25 000 -> 500 000
+            arraySizesFastSortAlgs = arraySizesFastSortAlgs.Concat(Enumerable.Range(1, (MAX_SIZE_FAST_SORT_ALGORITHM - START_SIZE) / STEP_SIZE_FAST_SORT_ALGORITHM + 1).Select(i =>  i * STEP_SIZE_FAST_SORT_ALGORITHM).ToArray()).ToArray();
+            int[] arraySizesFastSearchAlgs = new int[] { START_SIZE }; //100 + 250 000 -> 5 000 000
+            arraySizesFastSearchAlgs = arraySizesFastSearchAlgs.Concat(Enumerable.Range(1, (MAX_SIZE_FAST_SEARCH_ALGORITHM - START_SIZE) / STEP_SIZE_FAST_SEARCH_ALGORITHM + 1).Select(i => i * STEP_SIZE_FAST_SEARCH_ALGORITHM).ToArray()).ToArray();
+            
             //Skapar data
             ILogGenerator generator = new RandomLogGenerator();
 
@@ -45,7 +61,7 @@ namespace GMI24H_VT25_SortSearch_Labb_
             var intSearcher = new SearchingManager<int>();
 
             //Data för funktionalitetstester
-            var logs = generator.GenerateLogs(numberOfPosts, seed).ToList();
+            var logs = generator.GenerateLogs(NUMBER_OF_POSTS, SEED).ToList();
             LogEntry targetEntry = new LogEntry();
             targetEntry.IpAddress = "172.16.0.1";
             targetEntry.StatusCode = 450;
@@ -113,11 +129,11 @@ namespace GMI24H_VT25_SortSearch_Labb_
             Console.WriteLine("\n");
 
             Console.WriteLine("==== FunktionalitetsTest Sök Strängar ====");
-            Console.Write($"Control: {ipControl.IndexOf(stringTarget)}, ");
-            Console.Write($"Binary: {stringSearcher.BinarySearch(ipControl, stringTarget)}, ");
-            Console.Write($"Exponential: {stringSearcher.ExponentialSearch(ipControl, stringTarget)}, ");
-            Console.Write($"Jump: {stringSearcher.JumpSearch(ipControl, stringTarget)}, ");
-            Console.Write($"Linear: {stringSearcher.LinearSearch(ipControl, stringTarget)}, ");
+            Console.Write($"Control: {ipControl.IndexOf(STRING_TARGET)}, ");
+            Console.Write($"Binary: {stringSearcher.BinarySearch(ipControl, STRING_TARGET)}, ");
+            Console.Write($"Exponential: {stringSearcher.ExponentialSearch(ipControl, STRING_TARGET)}, ");
+            Console.Write($"Jump: {stringSearcher.JumpSearch(ipControl, STRING_TARGET)}, ");
+            Console.Write($"Linear: {stringSearcher.LinearSearch(ipControl, STRING_TARGET)}, ");
             Console.WriteLine("\n");
 
 
@@ -162,94 +178,139 @@ namespace GMI24H_VT25_SortSearch_Labb_
             Console.WriteLine("\n");
 
             Console.WriteLine("==== FunktionalitetsTest Sök Intar ====");
-            Console.Write($"Control: {errCodeControl.IndexOf(intTarget)}, ");
-            Console.Write($"Binary: {intSearcher.BinarySearch(errCodeControl, intTarget)}, ");
-            Console.Write($"Interpolation: {intSearcher.InterpolationSearch(errCodeControl, intTarget)}, ");
-            Console.Write($"Exponential: {intSearcher.ExponentialSearch(errCodeControl, intTarget)}, ");
-            Console.Write($"Jump: {intSearcher.JumpSearch(errCodeControl, intTarget)}, ");
-            Console.Write($"Linear: {intSearcher.LinearSearch(errCodeControl, intTarget)}, ");
+            Console.Write($"Control: {errCodeControl.IndexOf(INT_TARGET)}, ");
+            Console.Write($"Binary: {intSearcher.BinarySearch(errCodeControl, INT_TARGET)}, ");
+            Console.Write($"Interpolation: {intSearcher.InterpolationSearch(errCodeControl, INT_TARGET)}, ");
+            Console.Write($"Exponential: {intSearcher.ExponentialSearch(errCodeControl, INT_TARGET)}, ");
+            Console.Write($"Jump: {intSearcher.JumpSearch(errCodeControl, INT_TARGET)}, ");
+            Console.Write($"Linear: {intSearcher.LinearSearch(errCodeControl, INT_TARGET)}, ");
             Console.WriteLine("\n");
 
-            Console.WriteLine("==== Tidstester Sortering Strängar ====");
+            //TidsTester
             Logging logWriter = new Logging();
             Dictionary<int, (int, TimeSpan, TimeSpan)> timeData;
-            timeData = TimeTester.TimeTestSort<string>(stringSorter.QuickSort, "IpAddress", iterations, arraySizesFastSortAlgs, seed);
-            logWriter.LoggingCSV(timeData, "QuickSort");
-            timeData = TimeTester.TimeTestSort<string>(stringSorter.MergeSort, "IpAddress", iterations, arraySizesFastSortAlgs, seed);
-            logWriter.LoggingCSV(timeData, "MergeSort");
-            timeData = TimeTester.TimeTestSort<string>(stringSorter.HeapSort, "IpAddress", iterations, arraySizesFastSortAlgs, seed);
-            logWriter.LoggingCSV(timeData, "HeapSort");
 
-            timeData = TimeTester.TimeTestSort<string>(stringSorter.InsertionSort, "IpAddress", iterations, arraySizesSlowSortAlgs, seed);
-            logWriter.LoggingCSV(timeData, "InsertionSort");
-            timeData = TimeTester.TimeTestSort<string>(stringSorter.SelectionSort, "IpAddress", iterations, arraySizesSlowSortAlgs, seed);
-            logWriter.LoggingCSV(timeData, "SelectionSort");
-            timeData = TimeTester.TimeTestSort<string>(stringSorter.BubbleSort, "IpAddress", iterations, arraySizesSlowSortAlgs, seed);
-            logWriter.LoggingCSV(timeData, "BubbleSort");
+            Console.WriteLine("==== Tidstester Sortering Strängar Osorterad ====");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.QuickSort, "IpAddress", ITERATIONS_SORT, arraySizesFastSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "QuickSortString");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.MergeSort, "IpAddress", ITERATIONS_SORT, arraySizesFastSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "MergeSortString");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.HeapSort, "IpAddress", ITERATIONS_SORT, arraySizesFastSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "HeapSortString");
 
-            /*timeData = TimeTester.TimeTestSearch(stringSearcher.BinarySearch, "IpAddress", "127.0.0.1", 200, [100, 1000, 10000], 123, true);
-            logWriter.LoggingCSV(timeData, "BinarySearchMiddle");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.InsertionSort, "IpAddress", ITERATIONS_SORT, arraySizesInsertionSort, SEED);
+            logWriter.LoggingCSV(timeData, "InsertionSortString");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.SelectionSort, "IpAddress", ITERATIONS_SORT, arraySizesSlowSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "SelectionSortString");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.BubbleSort, "IpAddress", ITERATIONS_SORT, arraySizesSlowSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "BubbleSortString");
 
-            //Från våra objekt, sorter och searcher, kan vi sedan anropa olika metoder där vi skickar in vår data som parametrar.
-            //Det finns ingen implementation av bubblesort i SortingManager just nu. Det här metodanropet är
-            //enbart en referens för att visa hur ni kan anropa en metod och skicka er sampledata som ni hämtar 
-            //med LogParsern från textfilen. 
-            //sorter.BubbleSort(ipAddresses); // <-- implementerar metod från SortingManager-classen som jag vill använda...
+            Console.WriteLine("==== Tidstester Sortering Strängar Försorterad ====");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.QuickSort, "IpAddress", ITERATIONS_SORT, arraySizesFastSortAlgs, SEED,true);
+            logWriter.LoggingCSV(timeData, "QuickSortStringFörSorterad");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.MergeSort, "IpAddress", ITERATIONS_SORT, arraySizesFastSortAlgs, SEED,true);
+            logWriter.LoggingCSV(timeData, "MergeSortStringFörSorterad");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.HeapSort, "IpAddress", ITERATIONS_SORT, arraySizesFastSortAlgs, SEED,true);
+            logWriter.LoggingCSV(timeData, "HeapSortStringFörSorterad");
 
-            //För att
-            //vi ska kunna mäta hur lång tid det tar att köra algoritmen kan vi använda
-            //stopwatch och timespan 
-            Stopwatch sw = new Stopwatch();
-            //TIPS1: det här är ett lämpligt ställe att placera körningen/anropet av din algoritm.
-            /*sw.Restart();
-            stringSorter.SelectionSort(ipSelection);
-            sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tSelectionSort\tTid:{sw.Elapsed.ToString()}");*/
-            /*int target = 401;
-            for (int i = 0; i < 20; i++)
-            {
-                logs = generator.GenerateLogs(numberOfPosts, RandomNumberGenerator.GetInt32(999)).ToList();
-                errCodeMerge = logs.Select(entry => entry.StatusCode).ToList();
-                sw.Restart();
-                intSorter.MergeSort(errCodeMerge);
-                sw.Stop();
-                //Console.WriteLine($"Element:{numberOfPosts}\tMergeSortInt\tTid:{sw.Elapsed.ToString()}");
-                int index = intSearcher.ExponentialSearch(errCodeMerge, target);
-                Console.WriteLine($"{string.Join(",",errCodeMerge)}");
-                Console.WriteLine($"MergeSortInt\tTarget:{target}\t At index:{index}");
-                if (index == -1)
-                    Console.WriteLine($"Value at index:{index} = Not Found");
-                else
-                    Console.WriteLine($"Value at index:{index} = {errCodeMerge[index]}");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.InsertionSort, "IpAddress", ITERATIONS_SORT, arraySizesInsertionSort, SEED, true);
+            logWriter.LoggingCSV(timeData, "InsertionSortStringFörsorterad");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.SelectionSort, "IpAddress", ITERATIONS_SORT, arraySizesSlowSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "SelectionSortStringFörsorterad");
+            timeData = TimeTester.TimeTestSort<string>(stringSorter.BubbleSort, "IpAddress", ITERATIONS_SORT, arraySizesSlowSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "BubbleSortStringFörsorterad");
 
-                Console.WriteLine($"=================================================");
+            /*Console.WriteLine("==== Tidstester Sortering Intar ====");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.QuickSort, "StatusCode", ITERATIONS, arraySizesFastSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "QuickSortInt");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.MergeSort, "StatusCode", ITERATIONS, arraySizesFastSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "MergeSortInt");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.HeapSort, "StatusCode", ITERATIONS, arraySizesFastSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "HeapSortInt");
 
-            }
-            /*sw.Restart();
-            stringSorter.MergeSort(ipMerge);
-            sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tMergeSortString\tTid:{sw.Elapsed.ToString()}");
-            sw.Restart();
-            stringSorter.QuickSort(ipQuick);
-            sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tQuickSort\tTid:{sw.Elapsed.ToString()}");
-            sw.Restart();
-            stringSorter.BubbleSort(ipBubble);
-            sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tBubbleSort\tTid:{sw.Elapsed.ToString()}")
-            sw.Restart();
-            stringSorter.InsertionSort(ipInsertion);
-            sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tInsertionSort\tTid:{sw.Elapsed.ToString()}");
-            sw.Restart();
-            stringSorter.HeapSort(ipHeap);
-            sw.Stop();
-            Console.WriteLine($"Element:{numberOfPosts}\tHeapSort\tTid:{sw.Elapsed.ToString()}");*/
-            //TimeSpan elapsedTime = sw.Elapsed; //TIPS2: här är det kanske en bra idé att göra någonting med data som sparats i elapsedTime... 
-            //Man kan ju till exempel tänka sig att det kan vara lämpligt att gå tillbaka till deluppgift 1 i labb 1
-            //och kolla hur ni gjorde med er data där...
+            timeData = TimeTester.TimeTestSort<int>(intSorter.InsertionSort, "StatusCode", ITERATIONS, arraySizesInsertionSort, SEED);
+            logWriter.LoggingCSV(timeData, "InsertionSortInt");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.SelectionSort, "StatusCode", ITERATIONS, arraySizesSlowSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "SelectionSortInt");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.BubbleSort, "StatusCode", ITERATIONS, arraySizesSlowSortAlgs, SEED);
+            logWriter.LoggingCSV(timeData, "BubbleSortInt");*/
 
-            Console.WriteLine($"Totalt antal rader inlästa: {logs.Count}");
+            /*Console.WriteLine("==== Tidstester Sortering Intar Försorterad ====");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.QuickSort, "StatusCode", ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "QuickSortIntFörsorterad");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.MergeSort, "StatusCode", ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "MergeSortIntFörsorterad");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.HeapSort, "StatusCode", ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "HeapSortIntFörsorterad");
+
+            timeData = TimeTester.TimeTestSort<int>(intSorter.InsertionSort, "StatusCode", ITERATIONS, arraySizesInsertionSort, SEED, true);
+            logWriter.LoggingCSV(timeData, "InsertionSortIntFörsorterad");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.SelectionSort, "StatusCode", ITERATIONS, arraySizesSlowSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "SelectionSortIntFörsorterad");
+            timeData = TimeTester.TimeTestSort<int>(intSorter.BubbleSort, "StatusCode", ITERATIONS, arraySizesSlowSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "BubbleSortIntFörsorterad");*/
+
+            /*Console.WriteLine("==== Tidstester Sökning Strängar Målvärde Tidigt  ====");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.BinarySearch, "IpAddress", EARLY_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED,true);
+            logWriter.LoggingCSV(timeData, "BinarySearchStringEarly");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.ExponentialSearch, "IpAddress", EARLY_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED,true);
+            logWriter.LoggingCSV(timeData, "ExponentialSearchStringEarly");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.JumpSearch, "IpAddress", EARLY_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "JumpSearchStringEarly");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.LinearSearch, "IpAddress", EARLY_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "LinearSearchStringEarly");*/
+
+            Console.WriteLine("==== Tidstester Sökning Intar Målvärde Tidigt ====");
+            int target = EARLY_INT;
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.BinarySearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"BinarySearchIntEarlyT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.ExponentialSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"ExponentialSearchIntEarlyT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.InterpolationSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"InterpolationSearchIntEarlyT{target}");
+            
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.JumpSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"JumpSearchIntEarlyT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.LinearSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"LinearSearchIntEarlyT{target}");
+
+            /*Console.WriteLine("==== Tidstester Sökning Strängar Målvärde Slutet ====");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.BinarySearch, "IpAddress", LATE_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "BinarySearchStringLate");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.ExponentialSearch, "IpAddress", LATE_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "ExponentialSearchStringLate");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.JumpSearch, "IpAddress", LATE_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "JumpSearchStringLate");
+            timeData = TimeTester.TimeTestSearch<string>(stringSearcher.LinearSearch, "IpAddress", LATE_STRING, ITERATIONS, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, "LinearSearchStringLate");*/
+
+            Console.WriteLine("==== Tidstester Sökning Intar Målvärde Slutet ====");
+            target = LATE_INT;
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.BinarySearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"BinarySearchIntLateT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.ExponentialSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"ExponentialSearchIntLateT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.InterpolationSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"InterPolationSearchIntLateT{target}");
+            
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.JumpSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"JumpSearchIntLateT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.LinearSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"LinearSearchIntLateT{target}");
+
+            Console.WriteLine("==== Tidstester Sökning Intar Målvärde SAKNAS ====");
+            target = MISSING_INT;
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.BinarySearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"BinarySearchIntMissingT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.ExponentialSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"ExponentialSearchIntMissingT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.InterpolationSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSearchAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"InterpolationSearchIntMissingT{target}");
+            
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.JumpSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"JumpSearchIntMissingT{target}");
+            timeData = TimeTester.TimeTestSearch<int>(intSearcher.LinearSearch, "StatusCode", target, ITERATIONS_SEARCH, arraySizesFastSortAlgs, SEED, true);
+            logWriter.LoggingCSV(timeData, $"LinearSearchIntMissingT{target}");
         }
     }
 }

@@ -135,7 +135,7 @@ namespace AlgorithmLib
                 }
 
                 probeIndex = (int)((targetAsDouble - leftValue) * (rightIndex - leftIndex) / (rightValue - leftValue));
-                probeIndex = Math.Max(leftIndex, Math.Min(probeIndex, rightIndex));
+                probeIndex = Math.Max(leftIndex, Math.Min(probeIndex, rightIndex));//Clamp
                 //Out of bounds
                     /*if (probeIndex < leftIndex || probeIndex > rightIndex)
                     {

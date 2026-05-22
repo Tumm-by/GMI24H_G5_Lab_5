@@ -326,10 +326,12 @@ namespace AlgorithmLib
                     if (arrayOfList[j].CompareTo(arrayOfList[smallestIndex]) < 0)
                         smallestIndex = j;
                 }
-
-                tempVar = arrayOfList[i];
-                arrayOfList[i] = arrayOfList[smallestIndex];
-                arrayOfList[smallestIndex] = tempVar;
+                if (smallestIndex != i) 
+                { 
+                    tempVar = arrayOfList[i];
+                    arrayOfList[i] = arrayOfList[smallestIndex];
+                    arrayOfList[smallestIndex] = tempVar;
+                }
             }
 
             //Refilling the collection.
